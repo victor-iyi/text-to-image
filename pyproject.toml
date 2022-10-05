@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "text-to-image"
+version = "0.1.0"
+description = "Generate realistic images from text description"
+license = "Apache-2.0"
+authors = ["Victor I. Afolabi <javafolabi@gmail.com>"]
+maintainers = [
+  "Victor I. Afolabi <javafolabi@gmail.com>",
+]
+readme = "README.md"
+repository = "https://github.com/victor-iyi/text-to-image"
+keywords = ["image-generation", "stable-diffusion", "text-to-image"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache 2.0",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+packages = [
+  { include = "text_to_image" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+torch = "*"
+diffusers = "*"
+transformers = "*"
+ftfy = "*"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "*"
+covdefaults = "*"
+flake8 = "*"
+mypy = "*"
+pre-commit = "*"
+pydocstyle = "*"
+pytest = "*"
+pytest-cov = "*"
+tox = "*"
+
+[tool.poetry.scripts]
+text-to-image = "main:main"
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/victor-iyi/text-to-image/issues"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
