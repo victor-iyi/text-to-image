@@ -25,7 +25,6 @@ repos:
       - id: debug-statements
       - id: double-quote-string-fixer
       - id: end-of-file-fixer
-      - id: requirements-txt-fixer
       - id: name-tests-test
       - id: trailing-whitespace
   - repo: https://github.com/PyCQA/flake8
@@ -48,10 +47,6 @@ repos:
     hooks:
       - id: add-trailing-comma
         args: [--py36-plus]
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.0.0
-    hooks:
-      - id: setup-cfg-fmt
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.9.0
     hooks:
