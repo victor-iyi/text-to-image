@@ -1,0 +1,9 @@
+autopep8
+covdefaults
+flake8
+mypy
+pre-commit
+pydocstyle
+pytest
+pytest-cov
+tox
