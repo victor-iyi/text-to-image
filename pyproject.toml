@@ -3,13 +3,16 @@ name = "text-to-image"
 version = "0.1.0"
 description = "Generate realistic images from text description"
 license = "Apache-2.0"
+
 authors = ["Victor I. Afolabi <javafolabi@gmail.com>"]
 maintainers = [
   "Victor I. Afolabi <javafolabi@gmail.com>",
 ]
+
 readme = "README.md"
 repository = "https://github.com/victor-iyi/text-to-image"
 keywords = ["image-generation", "stable-diffusion", "text-to-image"]
+
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Console",
@@ -27,17 +30,30 @@ classifiers = [
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
+
+# Packages.
 packages = [
-  { include = "text_to_image" }
+  { include = "text_to_image", from = "src" }
 ]
 
 [tool.poetry.dependencies]
 python = "^3.9"
-torch = "*"
-diffusers = "*"
-transformers = "*"
-ftfy = "*"
 
+# PyTorch for matrix operations on GPU.
+torch = "*"
+# Provides pretrained diffusion models.
+diffusers = "*"
+# Provides APIs and tools to download and train pretrained models.
+transformers = "*"
+# Fixes unicode that's broken in various ways.
+ftfy = "*"
+# Command line progressbar.
+tqdm = "^4.64.1"
+# Image manipulation libraries.
+Pillow = "^9.2.0"
+opencv-python = "^4.6.0.66"
+
+# Dev requiremnts [optional].
 [tool.poetry.dev-dependencies]
 autopep8 = "*"
 covdefaults = "*"
@@ -49,12 +65,30 @@ pytest = "*"
 pytest-cov = "*"
 tox = "*"
 
+# entry point.
 [tool.poetry.scripts]
 text-to-image = "main:main"
 
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/victor-iyi/text-to-image/issues"
 
+# Poetry build system. See: https://python-poetry.org/docs/pyproject/
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+# Style hinting.
+[tool.mypy]
+files = "src"
+mypy_path = "src"
+namespace_packages = true
+explicit_package_bases = true
+show_error_codes = true
+strict = true
+
+# Coverage report.
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+]
