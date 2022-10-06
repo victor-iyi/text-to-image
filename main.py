@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import argparse
+import os
 
 import torch
 from text_to_image import generate_images
@@ -23,6 +24,7 @@ def main() -> int:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description='Generate images from text prompts.',
     )
+
     parser.add_argument(
         '-p', '--prompts', type=str,
         required=True, nargs='+',
@@ -43,12 +45,12 @@ def main() -> int:
         help='Number of inference steps.',
     )
     parser.add_argument(
-        '-g', '--guidance-scale', type=float, default=0.5,
-        help='How much prefix affects the output.',
-    )
-    parser.add_argument(
         '-t', '--train-step', type=int, default=1000,
         help='Scheduler train steps.',
+    )
+    parser.add_argument(
+        '-g', '--guidance-scale', type=float, default=0.5,
+        help='How much prefix affects the output.',
     )
 
     parser.add_argument(
@@ -57,6 +59,10 @@ def main() -> int:
         help='Device to use for inference.',
     )
 
+    parser.add_argument(
+        '-c', '--cache-dir', type=str, default='saved_models',
+        help='Directory to cache downloaded models.',
+    )
     parser.add_argument(
         '--pretrained-text-model', type=str, default='openai/clip-vit-base-patch32',
         help='Pretrained text model from HuggingFace Hub.',
@@ -77,7 +83,9 @@ def main() -> int:
         print('Warning: CUDA is not available. Using CPU instead.')
         args.device = 'cpu'
 
-    print(args)
+    os.makedirs(args.cache_dir, exist_ok=True)
+    print(f'Created cache dir: {args.cache_dir}')
+
     images = generate_images(args)
 
     image_grid(images, rows=1, cols=len(images)).show()

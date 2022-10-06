@@ -38,6 +38,7 @@ def generate(
 
     pipe = StableDiffusionPipeline.from_pretrained(
         args.pretrained_image_model, revision='fp16',
+        cache_dir=args.cache_dir,
         torch_dtype=torch.float16,  # pylint: disable=no-member
         use_auth_token=True,
     )
@@ -73,10 +74,8 @@ def generate_images(
     # Text embeddings -> image latents.
     latents = produce_latents(
         text_embeddings,
-        height=args.height, width=args.width,
         latents=latents,
         num_inference_steps=args.steps,
-        guidance_scale=args.guidance_scale,
         **kwargs,
     )
 

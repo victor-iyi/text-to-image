@@ -58,6 +58,7 @@ def get_text_embeddings(
     """
     # Keywrod arguments.
     device = kwargs.get('device')
+    cache_dir = kwargs.get('cache_dir')
     pretrained_text_model = kwargs.get('pretrained_text_model')
 
     if isinstance(text, str):
@@ -67,11 +68,12 @@ def get_text_embeddings(
         # Load the tokenizer to tokenize the text prompt..
         tokenizer = CLIPTokenizer.from_pretrained(
             pretrained_text_model,
+            cache_dir=cache_dir,
         )
 
     # Tokenize the text prompt.
     tokens = tokenizer(
-        text, padding=True,  # padding='max_length',
+        text, padding='max_length',  # padding='max_length',
         max_length=tokenizer.model_max_length,
         truncation=True, return_tensors='pt',
     )
@@ -80,6 +82,7 @@ def get_text_embeddings(
         # Load the encoder to encode the text prompt into embeddings.
         text_encoder = CLIPTextModel.from_pretrained(
             pretrained_text_model,
+            cache_dir=cache_dir,
         )
         text_encoder = text_encoder.to(device)
 
@@ -91,13 +94,13 @@ def get_text_embeddings(
 
     # Embed the prefix into the text embeddings.
     prefix_tokens = tokenizer(
-        prefix, padding=True,  # padding='max_length',
+        prefix, padding='max_length',  # padding='max_length',
         max_length=tokenizer.model_max_length,
-        return_tesnsors='pt',
+        return_tensors='pt',
     )
     with torch.no_grad():
         prefix_embeddings = text_encoder(
-            prefix_tokens.input_ids,
+            prefix_tokens.input_ids.to(device),
         )[0]
 
     # Concatenate the prefix and text embeddings.
@@ -147,12 +150,14 @@ def produce_latents(
     # Keyword arguments.
     device = kwargs.get('device')
     train_step = kwargs.get('train_step')
+    cache_dir = kwargs.get('cache_dir')
     pretrained_image_model = kwargs.get('pretrained_image_model')
 
     if img_model is None:
         # Load the UNet model for generating latents.
         img_model = UNet2DConditionModel.from_pretrained(
             pretrained_image_model,
+            cache_dir=cache_dir,
             subfolder='unet',
             use_auth_token=True,
         )
@@ -223,6 +228,7 @@ def decode_img_latents(
         list[Image.Image]: List of decoded images as a PIL image.
     """
     device = kwargs.get('device')
+    cache_dir = kwargs.get('cache_dir')
     pretrained_image_model = kwargs.get('pretrained_image_model')
 
     latents = 1 / 0.18215 * latents
@@ -230,6 +236,7 @@ def decode_img_latents(
     if decoder is None:
         decoder = AutoencoderKL.from_pretrained(
             pretrained_image_model,
+            cache_dir=cache_dir,
             subfolder='decoder',
             use_auth_token=True,
         )
