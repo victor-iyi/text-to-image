@@ -16,6 +16,8 @@
 
 # Text to Image
 
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/victor-iyi/text-to-image/main.svg)](https://results.pre-commit.ci/latest/github/victor-iyi/text-to-image/main)
+
 Generate realistic images from text prompt.
 
 ## HuggingFace 🤗 Hub
@@ -26,6 +28,7 @@ See [hub documentation] for more installation details.
 [`huggingface-cli`]: https://huggingface.co/docs/huggingface_hub/quick-start
 [hub documentation]: https://huggingface.co/docs/hub/index
 
+ <!-- markdownlint-disable MD014 commands-show-output -->
 ```sh
 $ huggingface-cli login
 ```
