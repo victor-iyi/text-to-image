@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import argparse
+
 import torch
 from diffusers import StableDiffusionPipeline
 from PIL import Image
@@ -21,72 +23,64 @@ from torch import autocast  # mypy: allow-implicit-reexport
 
 
 def generate(
-    prompts: str | list[str],
-    steps: int = 50,
+    args: argparse.Namespace,
 ) -> Image.Image:
     """Generate image from text prompt.
 
     Args:
-        prompt (str | list[str]): Image text description.
+        args (argparse.Namespace): Parsed command line arguments.
 
     Returns:
         Image.Image - A Pillow Image object.
     """
-    if isinstance(prompts, str):
-        prompts = [prompts]
-
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    if isinstance(args.prompts, str):
+        args.prompts = [args.prompts]
 
     pipe = StableDiffusionPipeline.from_pretrained(
-        'CompVis/stable-diffusion-v1-4', revision='fp16',
+        args.pretrained_image_model, revision='fp16',
         torch_dtype=torch.float16,  # pylint: disable=no-member
         use_auth_token=True,
     )
-    pipe = pipe.to(device)
+    pipe = pipe.to(args.device)
 
-    with autocast(device):
+    with autocast(args.device):
         image: Image.Image = pipe(
-            prompts,
-            num_inference_steps=steps,
+            args.prompts,
+            num_inference_steps=args.steps,
         )['sample'][0]
 
     return image
 
 
 def generate_images(
-    prompts: str | list[str],
-    height: int = 512,
-    width: int = 512,
-    num_inference_steps: int = 50,
-    guidance_scale: float = 7.5,
+    args: argparse.Namespace,
     latents: torch.Tensor | None = None,
 ) -> list[Image.Image]:
     """Generate image(s) from text prompt(s).
 
     Args:
-        prompts (str | list[str]): Text prompt(s).
-        height (int, optional): Generated image height. Defaults to 512.
-        width (int, optional): Generated image width. Defaults to 512.
-        num_inference_steps (int, optional): Number of inference steps. Defaults to 50.
-        guidance_scale (float, optional): How much to prefix affects output. Defaults to 7.5.
+        args (argparse.Namespace): Parsed command line arguments.
         latents (torch.Tensor | None, optional): Image latent embeddings. Defaults to None.
 
     Returns:
         list[Image.Image]: Image or list of generated PIL images.
     """
+    kwargs = vars(args)
+
     # Prompts -> text embeddings.
-    text_embeddings = get_text_embeddings(prompts)
+    text_embeddings = get_text_embeddings(args.prompts, **kwargs)
 
     # Text embeddings -> image latents.
     latents = produce_latents(
         text_embeddings,
-        height=height, width=width,
+        height=args.height, width=args.width,
         latents=latents,
-        num_inference_steps=num_inference_steps,
-        guidance_scale=guidance_scale,
+        num_inference_steps=args.steps,
+        guidance_scale=args.guidance_scale,
+        **kwargs,
     )
 
     # Image latents -> Images.
-    imgs = decode_img_latents(latents)
+    imgs = decode_img_latents(latents, **kwargs)
 
     return imgs

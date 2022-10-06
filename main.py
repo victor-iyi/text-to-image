@@ -58,11 +58,11 @@ def main() -> int:
     )
 
     parser.add_argument(
-        '--pretrained-text', type=str, default='openai/clip-vit-base-patch32',
+        '--pretrained-text-model', type=str, default='openai/clip-vit-base-patch32',
         help='Pretrained text model from HuggingFace Hub.',
     )
     parser.add_argument(
-        '--pretrained-image', type=str, default='CompVis/stable-diffusion-v1-4',
+        '--pretrained-image-model', type=str, default='CompVis/stable-diffusion-v1-4',
         help='Pretrained image model from HuggingFace Hub.',
     )
 
@@ -78,13 +78,7 @@ def main() -> int:
         args.device = 'cpu'
 
     print(args)
-    images = generate_images(
-        prompts=args.prompts,
-        height=args.height,
-        width=args.width,
-        num_inference_steps=args.steps,
-        guidance_scale=args.guidance_scale,
-    )
+    images = generate_images(args)
 
     image_grid(images, rows=1, cols=len(images)).show()
 
