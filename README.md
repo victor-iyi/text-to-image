@@ -18,6 +18,18 @@
 
 Generate realistic images from text prompt.
 
+## HuggingFace 🤗 Hub
+
+To log in to huggingface hub using [`huggingface-cli`].
+See [hub documentation] for more installation details.
+
+[`huggingface-cli`]: https://huggingface.co/docs/huggingface_hub/quick-start
+[hub documentation]: https://huggingface.co/docs/hub/index
+
+```sh
+$ huggingface-cli login
+```
+
 ## Contribution
 
 You are very welcome to modify and use them in your own projects.

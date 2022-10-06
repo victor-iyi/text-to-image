@@ -12,3 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+
+try:
+    import importlib_metadata as metadata
+except ImportError:
+    from importlib import metadata
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+version: Callable[[str], str] = metadata.version
+
+__version__ = version('text_to_image')
