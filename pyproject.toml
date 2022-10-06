@@ -56,6 +56,7 @@ Pillow = "^9.2.0"
 opencv-python = "^4.6.0.66"
 
 # Dev requiremnts [optional].
+rope = "^1.3.0"
 [tool.poetry.dev-dependencies]
 # Automatically format Python code to PEP 8 style guide.
 autopep8 = "*"
