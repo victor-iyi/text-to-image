@@ -20,6 +20,17 @@
 
 Generate realistic images from text prompt.
 
+If you're using Apple Silicon, you can take advantage of the Apple's
+Metal Performance Shader (MPS) to use the fast M-series chip.
+
+To use this, make sure to install the nightly release of PyTorch as it is not
+yet avvailable in the sable release (but will be added in future releases).
+
+```sh
+# MPS acceleration is available on MacOS 12.3+
+$ pip3 install --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+```
+
 ## HuggingFace 🤗 Hub
 
 To log in to huggingface hub using [`huggingface-cli`].
