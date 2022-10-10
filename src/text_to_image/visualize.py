@@ -17,6 +17,16 @@ from PIL import Image
 def image_grid(
         imgs: list[Image.Image], rows: int, cols: int,
 ) -> Image.Image:
+    """Create image grid from list of PIL Images.
+
+    Args:
+        imgs (list[Image.Image]): List of PIL images.
+        rows (int): Number of rows in the grid.
+        cols (int): Number of columns in the grid.
+
+    Returns:
+        Image.Image - A single PIL Image organized into grids.
+    """
     assert len(imgs) == rows * cols
 
     w, h = imgs[0].size
