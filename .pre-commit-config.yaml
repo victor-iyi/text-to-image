@@ -38,7 +38,7 @@ repos:
       - id: autopep8
         args: [--diff, --max-line-length=120, --aggressive]
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.8.3
+    rev: v3.8.5
     hooks:
       - id: reorder-python-imports
         args: [--py37-plus]
@@ -52,12 +52,12 @@ repos:
     hooks:
       - id: python-use-type-annotations
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.981
+    rev: v0.982
     hooks:
       - id: mypy
         additional_dependencies: [types-all, typing_extensions]
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.2.1
+    rev: 1.2.0rc1
     hooks:
       - id: poetry-check
       - id: poetry-lock
