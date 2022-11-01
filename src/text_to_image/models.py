@@ -34,7 +34,7 @@ def get_text_embeddings(
     prefix: str | list[str] = '',
     tokenizer: nn.Module | None = None,
     text_encoder: nn.Module | None = None,
-    **kwargs: dict[str, str | int],
+    **kwargs: str | int,
 ) -> torch.Tensor:
     """Get text embeddings from text prompt.
 
@@ -117,7 +117,7 @@ def produce_latents(
     latents: torch.Tensor | None = None,
     img_model: nn.Module | None = None,
     scheduler: LMSDiscreteScheduler | None = None,
-    **kwargs: dict[str, str | int],
+    **kwargs: str | int,
 ) -> torch.Tensor:
     """Produce latent space from text embeddings.
 
@@ -211,7 +211,7 @@ def produce_latents(
 def decode_img_latents(
     latents: torch.Tensor,
     decoder: AutoencoderKL | None = None,
-    **kwargs: dict[str, str],
+    **kwargs: str,
 ) -> list[Image.Image]:
     """Decode latent embeddings into images.
 
