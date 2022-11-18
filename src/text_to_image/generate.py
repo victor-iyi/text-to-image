@@ -19,7 +19,7 @@ from PIL import Image
 from text_to_image.models import decode_img_latents
 from text_to_image.models import get_text_embeddings
 from text_to_image.models import produce_latents
-from torch import autocast  # mypy: allow-implicit-reexport
+from torch.amp.autocast_mode import autocast
 
 
 def generate(

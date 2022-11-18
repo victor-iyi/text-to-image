@@ -16,7 +16,7 @@ from diffusers import AutoencoderKL
 from diffusers import LMSDiscreteScheduler
 from diffusers import UNet2DConditionModel
 from PIL import Image
-from torch import autocast  # mypy: allow-implicit-reexport
+from torch.amp.autocast_mode import autocast
 from torch import nn
 from tqdm import tqdm
 from transformers import CLIPTextModel
@@ -34,7 +34,7 @@ def get_text_embeddings(
     prefix: str | list[str] = '',
     tokenizer: nn.Module | None = None,
     text_encoder: nn.Module | None = None,
-    **kwargs: str | int,
+    **kwargs: str,
 ) -> torch.Tensor:
     """Get text embeddings from text prompt.
 
@@ -49,7 +49,6 @@ def get_text_embeddings(
 
     Keyword Args:
         device (str): Device type. Defaults to 'cpu'.
-        train_step (int): Scheduler train step. Defaults to 1000.
         pretrained_image_model (str): Pretrained image model from
             hugging face hub.
 
