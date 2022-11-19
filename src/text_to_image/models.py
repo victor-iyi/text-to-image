@@ -16,8 +16,8 @@ from diffusers import AutoencoderKL
 from diffusers import LMSDiscreteScheduler
 from diffusers import UNet2DConditionModel
 from PIL import Image
-from torch.amp.autocast_mode import autocast
 from torch import nn
+from torch.amp.autocast_mode import autocast
 from tqdm import tqdm
 from transformers import CLIPTextModel
 from transformers import CLIPTokenizer
