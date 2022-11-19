@@ -32,8 +32,6 @@ from transformers import CLIPTokenizer
 def get_text_embeddings(
     text: str | list[str],
     prefix: str | list[str] = '',
-    tokenizer: nn.Module | None = None,
-    text_encoder: nn.Module | None = None,
     **kwargs: str,
 ) -> torch.Tensor:
     """Get text embeddings from text prompt.
@@ -42,10 +40,6 @@ def get_text_embeddings(
         text (str | list[str]): Text prompt.
         prefix (str | list[str], optional): Prefix to add to text prompt.
             Defaults to ''.
-        tokenizer (nn.Module, optional) - Pre-trained text tokenizer.
-            Defaults to `transformers.CLIPTokenizer`.
-        text_encoder (nn.Model, optional) - Pre-trained text encoder.
-            Defaults to `transformers.CLIPTextModel`.
 
     Keyword Args:
         device (str): Device type. Defaults to 'cpu'.
@@ -63,12 +57,11 @@ def get_text_embeddings(
     if isinstance(text, str):
         text = [text]
 
-    if not tokenizer:
-        # Load the tokenizer to tokenize the text prompt..
-        tokenizer = CLIPTokenizer.from_pretrained(
-            pretrained_text_model,
-            cache_dir=cache_dir,
-        )
+    # Load the tokenizer to tokenize the text prompt..
+    tokenizer = CLIPTokenizer.from_pretrained(
+        pretrained_text_model,
+        cache_dir=cache_dir,
+    )
 
     # Tokenize the text prompt.
     tokens = tokenizer(
@@ -77,13 +70,12 @@ def get_text_embeddings(
         truncation=True, return_tensors='pt',
     )
 
-    if not text_encoder:
-        # Load the encoder to encode the text prompt into embeddings.
-        text_encoder = CLIPTextModel.from_pretrained(
-            pretrained_text_model,
-            cache_dir=cache_dir,
-        )
-        text_encoder = text_encoder.to(device)
+    # Load the encoder to encode the text prompt into embeddings.
+    text_encoder = CLIPTextModel.from_pretrained(
+        pretrained_text_model,
+        cache_dir=cache_dir,
+    )
+    text_encoder = text_encoder.to(device)
 
     with torch.no_grad():
         embeddings = text_encoder(tokens.input_ids.to(device))[0]
@@ -113,9 +105,7 @@ def produce_latents(
     height: int = 512, width: int = 512,
     num_inference_steps: int = 50,
     guidance_scale: float = 7.5,
-    latents: torch.Tensor | None = None,
     img_model: nn.Module | None = None,
-    scheduler: LMSDiscreteScheduler | None = None,
     **kwargs: str | int,
 ) -> torch.Tensor:
     """Produce latent space from text embeddings.
@@ -128,16 +118,12 @@ def produce_latents(
             Defaults to 50.
         guidance_scale (float, optional): How much guidance should text prefix
             affect the output. Defaults to 7.5.
-        latents (torch.Tensor | None, optional): Latent embedding.
-            Defaults to None.
         img_model (nn.Module | None, optional): Image model to predict noise
             (UNet model). Defaults to None.
-        scheduler (LMSDiscreteScheduler | None, optional): Scheduler for
-            inference. Defaults to None.
 
     Keyword Args:
         device (str): Device type. Defaults to 'cpu'.
-        train_step (int): Scheduler train step. Defaults to 1000.
+        train_steps (int): Scheduler train step. Defaults to 1000.
         pretrained_image_model (str): Pretrained image model from
             hugging face hub.
 
@@ -148,7 +134,7 @@ def produce_latents(
 
     # Keyword arguments.
     device = kwargs.get('device')
-    train_step = kwargs.get('train_step')
+    train_steps = kwargs.get('train_steps')
     cache_dir = kwargs.get('cache_dir')
     pretrained_image_model = kwargs.get('pretrained_image_model')
 
@@ -161,36 +147,34 @@ def produce_latents(
             use_auth_token=True,
         )
 
-    if latents is None:
-        # Generate random latent noise.
-        latents = torch.randn((
-            text_embeddings.shape[0] // 2,
-            img_model.in_channels,
-            height // 8, width // 8,
-        ))
+    # Generate random latent noise.
+    latents = torch.randn((
+        text_embeddings.shape[0] // 2,
+        img_model.in_channels,
+        height // 8, width // 8,
+    ))
     latents = latents.to(device)
 
-    if scheduler is None:
-        scheduler = LMSDiscreteScheduler(
-            beta_start=0.00085, beta_end=0.012,
-            beta_schedule='scaled_linear',
-            num_train_timesteps=train_step,
-        )
+    scheduler = LMSDiscreteScheduler(
+        beta_start=0.00085, beta_end=0.012,
+        beta_schedule='scaled_linear',
+        num_train_timesteps=train_steps,
+    )
     scheduler.set_timesteps(num_inference_steps)
     latents *= scheduler.sigmas[0]
 
-    with autocast(device):
-        for i, t in tqdm(enumerate(scheduler.timesteps)):
+    with autocast(device, dtype=torch.bfloat16, enabled=False):
+        for i, timestep in tqdm(enumerate(scheduler.timesteps)):
             # Expand the latents if we are doing classifier-free guidance
             # to avoid doing two forward passes.
-            latent_model_input = torch.cat([latents] * 2)
+            latent_input = torch.cat([latents] * 2)
             sigma = scheduler.sigmas[i]
-            latent_model_input /= ((sigma ** 2 + 1) ** 0.5)
+            latent_input /= ((sigma ** 2 + 1) ** 0.5)
 
             # Predict the noise residual.
             with torch.no_grad():
                 noise_pred = img_model(
-                    latent_model_input, t,
+                    latent_input, timestep,
                     encoder_hidden_states=text_embeddings,
                 )['sample']
 

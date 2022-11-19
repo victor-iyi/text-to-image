@@ -45,7 +45,7 @@ def main() -> int:
         help='Number of inference steps.',
     )
     parser.add_argument(
-        '-t', '--train-step', type=int, default=1000,
+        '-t', '--train-steps', type=int, default=1000,
         help='Scheduler train steps.',
     )
     parser.add_argument(

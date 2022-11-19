@@ -39,7 +39,7 @@ def generate(
     pipe = StableDiffusionPipeline.from_pretrained(
         args.pretrained_image_model, revision='fp16',
         cache_dir=args.cache_dir,
-        torch_dtype=torch.float16,  # pylint: disable=no-member
+        torch_dtype=torch.float16,
         use_auth_token=True,
     )
     pipe = pipe.to(args.device)
@@ -55,13 +55,11 @@ def generate(
 
 def generate_images(
     args: argparse.Namespace,
-    latents: torch.Tensor | None = None,
 ) -> list[Image.Image]:
     """Generate image(s) from text prompt(s).
 
     Args:
         args (argparse.Namespace): Parsed command line arguments.
-        latents (torch.Tensor | None, optional): Image latent embeddings. Defaults to None.
 
     Returns:
         list[Image.Image]: Image or list of generated PIL images.
@@ -74,7 +72,6 @@ def generate_images(
     # Text embeddings -> image latents.
     latents = produce_latents(
         text_embeddings,
-        latents=latents,
         num_inference_steps=args.steps,
         **kwargs,
     )
