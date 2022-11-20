@@ -28,7 +28,7 @@ yet avvailable in the sable release (but will be added in future releases).
 
 ```sh
 # MPS acceleration is available on MacOS 12.3+
-$ pip3 install --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
+pip3 install --pre torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/nightly/cpu
 ```
 
 ## HuggingFace 🤗 Hub
@@ -41,7 +41,7 @@ See [hub documentation] for more installation details.
 
  <!-- markdownlint-disable MD014 commands-show-output -->
 ```sh
-$ huggingface-cli login
+huggingface-cli login
 ```
 
 ## Contribution
