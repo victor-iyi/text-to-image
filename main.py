@@ -19,11 +19,15 @@ from text_to_image import generate_images
 from text_to_image import image_grid
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description='Generate images from text prompts.',
-    )
+def parse_args(parser: argparse.ArgumentParser) -> argparse.Namespace:
+    """Parse command line argument.
+
+    Arguments:
+        parser (argparse.ArgumentParser): Command line argument parser.
+
+    Returns:
+        argparse.Namespace - Parsed arguments.
+    """
 
     parser.add_argument(
         '-p', '--prompts', type=str,
@@ -83,11 +87,25 @@ def main() -> int:
         print('Warning: CUDA is not available. Using CPU instead.')
         args.device = 'cpu'
 
+    return args
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        description='Generate images from text prompts.',
+    )
+
+    args = parse_args(parser)
+
+    # Create directory to save downloaded models.
     os.makedirs(args.cache_dir, exist_ok=True)
     print(f'Created cache dir: {args.cache_dir}')
 
+    # Generate image from text.
     images = generate_images(args)
 
+    # Display images in a grid.
     image_grid(images, rows=1, cols=len(images)).show()
 
     return 0
