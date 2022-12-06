@@ -40,7 +40,7 @@ packages = [
 python = ">=3.9"
 
 # Tensor and dynamic neural net with strong GPU acceleration.
-torch = { version = ">=1.12.1", allow-prereleases = true }
+torch = { version = ">=1.13.0", allow-prereleases = true }
 # Provides pretrained diffusion models.
 diffusers = ">=0.3.0"
 # State-of-the-art Machine Learning for JAX, PyTorch & TensorFlow.
@@ -49,7 +49,7 @@ transformers = ">=4.22.2"
 # Fast, extensible progress meter.
 tqdm = ">=4.64.1"
 # Python Imaging Library.
-Pillow = ">=9.2.0"
+Pillow = ">=9.3.0"
 # Fundamental algorithms for scientific computing in Python
 scipy = ">=1.9.3"
 
