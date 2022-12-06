@@ -14,7 +14,7 @@
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.3.0
+    rev: v4.4.0
     hooks:
       - id: check-ast
       - id: check-merge-conflict
@@ -28,7 +28,7 @@ repos:
       - id: name-tests-test
       - id: trailing-whitespace
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 6.0.0
     hooks:
       - id: flake8
         args: [--ignore, "E265,E501,W503,W504"]
