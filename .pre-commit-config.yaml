@@ -33,7 +33,7 @@ repos:
       - id: flake8
         args: [--ignore, "E265,E501,W503,W504"]
   - repo: https://github.com/pre-commit/mirrors-autopep8
-    rev: v2.0.0
+    rev: v2.0.1
     hooks:
       - id: autopep8
         args: [--diff, --max-line-length=120, --aggressive]
